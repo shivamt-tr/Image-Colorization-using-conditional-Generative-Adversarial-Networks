@@ -19,15 +19,15 @@ bash download_datasets_and_models.sh
 
 The Pix2Pix model has been modified and trained with several settings. The experimental models are following:
 
-| Model        | Generator           | Discriminator  | Loss Function
-| ------------- |:-------------:| -----:|-----:|
-| 1_generator_base_l1_loss | UNet | PatchGAN | Adversarial + L1 |
-| 2_generator_base_content_loss | UNet | PatchGAN | Adversarial + Content-Loss |
-| 3_generator_base_l1_and_content_loss | UNet | PatchGAN | Adversarial + L1 & Content-Loss |
-| 4_generator_resnet_l1_loss | ResNet with no downsampling | PatchGAN | Adversarial + L1 |
-| 5_generator_residual_unet_l1_loss | ResidualUNet | PatchGAN | Adversarial + L1 |
-| 6_generator_residual_unet_upsampled_l1_loss | ResidualUNet with upsampling | PatchGAN | Adversarial + L1 |
-| 7_generator_base_l1_loss_pretrained | UNet pre-trained with l1 loss | PatchGAN | Adversarial + L1 |
+| SNo | Model        | Generator           | Discriminator  | Loss Function |
+| --: | ------------- |:-------------:| -----:|-----:|
+| 1 | 1_generator_base_l1_loss | UNet | PatchGAN | Adversarial + L1 |
+| 2 | 2_generator_base_content_loss | UNet | PatchGAN | Adversarial + Content-Loss |
+| 3 | 3_generator_base_l1_and_content_loss | UNet | PatchGAN | Adversarial + L1 & Content-Loss |
+| 4 | 4_generator_resnet_l1_loss | ResNet with no downsampling | PatchGAN | Adversarial + L1 |
+| 5 | 5_generator_residual_unet_l1_loss | ResidualUNet | PatchGAN | Adversarial + L1 |
+| 6 | 6_generator_residual_unet_upsampled_l1_loss | ResidualUNet with upsampling | PatchGAN | Adversarial + L1 |
+| 7 | 7_generator_base_l1_loss_pretrained | UNet pre-trained with l1 loss | PatchGAN | Adversarial + L1 |
 
 #### 1. 1_generator_base_l1_loss: Baseline
 #### 2. 2_generator_base_content_loss: Baseline with content loss instead of l1
