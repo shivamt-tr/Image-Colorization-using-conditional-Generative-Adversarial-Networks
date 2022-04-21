@@ -20,7 +20,7 @@ bash download_datasets_and_models.sh
 The Pix2Pix model has been modified and trained with several settings. The experimental models are following:
 
 | SNo | Model        | Generator           | Discriminator  | Loss Function |
-| --: | ------------- |:-------------:| -----:|-----:|
+| -: | ------------- |:-----------:| -----:|-----:|
 | 1 | 1_generator_base_l1_loss | UNet | PatchGAN | Adversarial + L1 |
 | 2 | 2_generator_base_content_loss | UNet | PatchGAN | Adversarial + Content-Loss |
 | 3 | 3_generator_base_l1_and_content_loss | UNet | PatchGAN | Adversarial + L1 & Content-Loss |
