@@ -18,16 +18,16 @@ bash download_datasets_and_models.sh
 ## Experiments
 
 The Pix2Pix model has been modified and trained with several settings. The experimental models are following:
-### 1. 1_generator_base_l1_loss: Baseline
-### 2. 2_generator_base_content_loss: Baseline with content loss instead of l1
-### 3. 3_generator_base_l1_and_content_loss: Baseline with content loss and l1 loss
-### 4. 4_generator_resnet_l1_loss: With ResNet generator that does not perform any downsampling
-### 5. 5_generator_residual_unet_l1_loss: Experimental ResidualUNet generator and training on adversarial and l1 loss
-### 6. 6_generator_residual_unet_upsampled_l1_loss: Experimental ResidualUNet generator with upsampling block for enhancing output resolution
-### 7. 7_generator_base_l1_loss_pretrained: Pre-training the generator with l1 loss before starting training of baseline model (inspired from  https://towardsdatascience.com/colorizing-black-white-images-with-u-net-and-conditional-gan-a-tutorial-81b2df111cd8)
+#### 1. 1_generator_base_l1_loss: Baseline
+#### 2. 2_generator_base_content_loss: Baseline with content loss instead of l1
+#### 3. 3_generator_base_l1_and_content_loss: Baseline with content loss and l1 loss
+#### 4. 4_generator_resnet_l1_loss: With ResNet generator that does not perform any downsampling
+#### 5. 5_generator_residual_unet_l1_loss: Experimental ResidualUNet generator and training on adversarial and l1 loss
+#### 6. 6_generator_residual_unet_upsampled_l1_loss: Experimental ResidualUNet generator with upsampling block for enhancing output resolution
+#### 7. 7_generator_base_l1_loss_pretrained: Pre-training the generator with l1 loss before starting training of baseline model (inspired from  https://towardsdatascience.com/colorizing-black-white-images-with-u-net-and-conditional-gan-a-tutorial-81b2df111cd8)
 
 ## Training
-- To train the model on one of the pre-defined tasks you can run the following command.
+To train the model on one of the pre-defined tasks you can run the following command.
 ```bash
 python train.py --model model_name --startfrom epoch_number
 ```
