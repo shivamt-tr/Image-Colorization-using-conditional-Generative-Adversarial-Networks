@@ -29,7 +29,7 @@ The Pix2Pix model has been modified and trained with several settings. The exper
 | 6 | 6_generator_residual_unet_upsampled_l1_loss | ResidualUNet with upsampling | PatchGAN | Adversarial + L1 |
 | 7 | 7_generator_base_l1_loss_pretrained | UNet pre-trained with l1 loss | PatchGAN | Adversarial + L1 |
 
-Experiment 7 is inspired from https://towardsdatascience.com/colorizing-black-white-images-with-u-net-and-conditional-gan-a-tutorial-81b2df111cd8)
+Experiment 7 is inspired from [Colorizing black & white images with U-Net and conditional GAN — A Tutorial](https://towardsdatascience.com/colorizing-black-white-images-with-u-net-and-conditional-gan-a-tutorial-81b2df111cd8)
 
 ## Training
 To train the model on one of the pre-defined tasks you can run the following command.
