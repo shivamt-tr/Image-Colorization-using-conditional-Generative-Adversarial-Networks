@@ -1,6 +1,4 @@
-data/train/
-data/test/
-data/visualize/
+data/*/
 models/*.pth
 result-logs/*/
 test-images/*/
