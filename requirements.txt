@@ -1,3 +1,6 @@
-numpy==
-pytorch==
+kaggle
+numpy
+matplotlib
+sklearn
+pytorch
 fastai==2.4

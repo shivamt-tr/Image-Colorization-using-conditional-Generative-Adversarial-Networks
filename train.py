@@ -16,10 +16,10 @@ import matplotlib.pyplot as plt
 
 import torch
 from torch import optim
-from torchvision import transforms
 
 import config
 from discriminator import PatchGAN
+from content_loss import ContentLoss
 from utils import load_transformed_batch, load_rgb_batch, init_weights, lab_to_rgb, load_generator
 from evaluation_metrics import mean_absolute_error, epsilon_accuracy, peak_signal_to_noise_ratio
 
@@ -273,8 +273,8 @@ for epoch in range(config.STARTING_EPOCH, config.NUM_EPOCHS+1):
             generator_loss_additional = additional_criterion(fake_image, real_image)
             generator_loss_total = 0.01 * generator_loss_adversarial + generator_loss_additional
         if config.LOSS_TYPE == 'both':
-            generator_loss_additional = additional_criterion(fake_image, real_image) + torch.nn.L1Loss()(fake_color, ab) * lmbda
-            generator_loss_total = generator_loss_adversarial + generator_loss_additional
+            generator_loss_additional = additional_criterion(fake_image, real_image) + torch.nn.L1Loss()(fake_color, ab) * config.L1_LAMBDA
+            generator_loss_total = 0.01 * generator_loss_adversarial + generator_loss_additional
         
         # backward + optimize
         generator_loss_total.backward()
