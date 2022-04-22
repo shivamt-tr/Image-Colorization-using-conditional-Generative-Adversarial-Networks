@@ -1,6 +1,6 @@
-data/*/
+data/train/
+data/test/
+data/visualize/
 models/*.pth
-result-logs/*/
-test-images/*/
-test-results/*/
+result-logs/*
 /__pycache__
