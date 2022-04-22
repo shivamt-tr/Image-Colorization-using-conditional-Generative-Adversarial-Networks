@@ -2,5 +2,5 @@ data/train/*.jpg
 data/test/*.jpg
 data/visualize/*.jpg
 models/*.pth
-result-logs/*
+result-logs/
 /__pycache__

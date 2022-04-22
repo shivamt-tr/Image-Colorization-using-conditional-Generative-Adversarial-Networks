@@ -6,7 +6,6 @@ Created on Thu Apr 21 16:30:53 2022
 """
 
 import os
-import sys
 import time
 import argparse
 import numpy as np
@@ -293,9 +292,9 @@ for epoch in range(config.STARTING_EPOCH, config.NUM_EPOCHS+1):
             real_image_array = torch.from_numpy(lab_to_rgb(L.detach(), ab.detach()))
             fake_image_array = torch.from_numpy(lab_to_rgb(L.detach(), fake_color.detach()))
         
-        running_mae += mean_absolute_error(real_image_array, fake_image_array) * config.BATCH_SIZE
+        running_mae += 255. * mean_absolute_error(real_image_array, fake_image_array) * config.BATCH_SIZE
         running_epsilon += epsilon_accuracy(real_image_array, fake_image_array, epsilon=0.05) * config.BATCH_SIZE  # epsilon set at 5% of 255
-        running_psnr += peak_signal_to_noise_ratio(real_image_array, fake_image_array) * config.BATCH_SIZE
+        running_psnr += peak_signal_to_noise_ratio(real_image_array, fake_image_array, max_value=1.) * config.BATCH_SIZE
 
     # Calculate the average accuracy and average loss for current epoch
     epoch_generator_loss_adversarial = running_generator_loss_adversarial / (n_batches*config.BATCH_SIZE)

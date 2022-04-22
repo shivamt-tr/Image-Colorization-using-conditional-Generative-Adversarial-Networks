@@ -29,7 +29,7 @@ def epsilon_accuracy(pred_img: torch.tensor, true_img: torch.tensor, epsilon=0.5
     return ee/true_img.numel()
 
 
-def peak_signal_to_noise_ratio(pred_img: torch.tensor, true_img: torch.tensor):
+def peak_signal_to_noise_ratio(pred_img: torch.tensor, true_img: torch.tensor, max_value=1):
 
     assert pred_img.shape[0] > 0 and true_img.shape[0] > 0, "lists are empty"
     assert pred_img.shape[0] == true_img.shape[0], "num of images in pred_img is not matching with num of images in true_img"
@@ -39,7 +39,7 @@ def peak_signal_to_noise_ratio(pred_img: torch.tensor, true_img: torch.tensor):
     
     for p_img, t_img in zip(pred_img, true_img):      
         mse = torch.mean((p_img.type(torch.float32) - t_img.type(torch.float32)) ** 2)
-        psnr += 100 if mse == 0 else 20 * log10(255.0 / sqrt(mse)) 
+        psnr += 100 if mse == 0 else 20 * log10(max_value / sqrt(mse)) 
     
     return psnr/num_sample
 
