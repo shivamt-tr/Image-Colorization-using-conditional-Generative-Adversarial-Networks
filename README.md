@@ -10,10 +10,9 @@ pip install -r requirements.txt
 
 ## Datasets and pre-trained models
 
-The dataset can be downloaded from kaggle [mscoco7k](https://www.kaggle.com/datasets/shivam28/mscoco7k) and pre-trained models can be downloaded with the following script.
-```bash
-bash download_model_weights.sh
-```
+The dataset can be downloaded from kaggle [mscoco7k](https://www.kaggle.com/datasets/shivam28/mscoco7k) and pre-trained models can be downloaded with the following link [model-weights](https://github.com/shivamt-tr/Image-Colorization-using-conditional-Generative-Adversarial-Networks/releases/tag/initial).
+
+Save the model weights in models/ and data files in data/ directory.
 
 ## Experiments
 
