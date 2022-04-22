@@ -10,9 +10,9 @@ pip install -r requirements.txt
 
 ## Datasets and pre-trained models
 
-The dataset and pre-trained models can be downloaded with the following script.
+The dataset can be downloaded from kaggle [mscoco7k](https://www.kaggle.com/datasets/shivam28/mscoco7k) and pre-trained models can be downloaded with the following script.
 ```bash
-bash download_datasets_and_models.sh
+bash download_model_weights.sh
 ```
 
 ## Experiments
