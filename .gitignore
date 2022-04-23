@@ -1,6 +1,7 @@
 data/train/*.jpg
 data/test/*.jpg
 data/visualize/*.jpg
+data/eval-results/*.jpg
 models/*.pth
 result-logs/
 /__pycache__

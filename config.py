@@ -9,6 +9,7 @@ TEST_DIR = "data/test"
 VIS_DIR = "data/visualize"
 RES_DIR = "result-logs/"
 MODEL_DIR = "models/"
+MODEL_NAME = '1_generator_base_l1_loss'
 # TRAIN_MODEL = False
 # LOAD_MODEL = True
 PRETRAIN_GENERATOR = False

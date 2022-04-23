@@ -27,6 +27,7 @@ warnings.filterwarnings("ignore")
 
 # %%
 
+# Configure command-line arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--model',
                     help='model type to train or test, specify one of [\'1_generator_base_l1_loss\', \'2_generator_base_content_loss\', \'3_generator_base_l1_and_content_loss\', \'4_generator_resnet_l1_loss\', \'5_generator_residual_unet_l1_loss\', \'6_generator_residual_unet_upsampled_l1_loss\', \'7_generator_base_l1_loss_pretrained\']',
@@ -37,28 +38,35 @@ args = parser.parse_args()
 
 config.STARTING_EPOCH = args.startfrom
 
-if args.model == '1_generator_base_l1_loss':
+if args.model == '1_generator_base_l1_loss' or args.model == '1':
+    config.MODEL_NAME = '1_generator_base_l1_loss'
     config.GENERATOR_TYPE = 'UNet'
     
-if args.model == '2_generator_base_content_loss':
+if args.model == '2_generator_base_content_loss' or args.model == '2':
+    config.MODEL_NAME = '2_generator_base_content_loss'
     config.GENERATOR_TYPE = 'UNet'
     config.LOSS_TYPE = 'content'
     
-if args.model == '3_generator_base_l1_and_content_loss':
+if args.model == '3_generator_base_l1_and_content_loss' or args.model == '3':
+    config.MODEL_NAME = '3_generator_base_l1_and_content_loss'
     config.GENERATOR_TYPE = 'UNet'
     config.LOSS_TYPE = 'both'
     
-if args.model == '4_generator_resnet_l1_loss':
+if args.model == '4_generator_resnet_l1_loss' or args.model == '4':
+    config.MODEL_NAME = '4_generator_resnet_l1_loss'
     config.GENERATOR_TYPE = 'ResNet'
     
-if args.model == '5_generator_residual_unet_l1_loss':
+if args.model == '5_generator_residual_unet_l1_loss' or args.model == '5':
+    config.MODEL_NAME = '5_generator_residual_unet_l1_loss'
     config.GENERATOR_TYPE = 'ResidualUNet'
     
-if args.model == '6_generator_residual_unet_upsampled_l1_loss':
+if args.model == '6_generator_residual_unet_upsampled_l1_loss' or args.model == '6':
+    config.MODEL_NAME = '6_generator_residual_unet_upsampled_l1_loss'
     config.GENERATOR_TYPE = 'ResidualUNet'
     config.ENHANCE_COLORIZED_IMAGE = True
     
-if args.model == '7_generator_base_l1_loss_pretrained':
+if args.model == '7_generator_base_l1_loss_pretrained' or args.model == '7':
+    config.MODEL_NAME = '7_generator_base_l1_loss_pretrained'
     config.GENERATOR_TYPE = 'PretrainedUNet'
     config.LOAD_PRETRAINED_GENERATOR = True
     config.PRETRAIN_GENERATOR = False
@@ -126,6 +134,7 @@ n_batches = int(len(train_files)/config.BATCH_SIZE)
 # %%
 
 if config.LOAD_PRETRAINED_GENERATOR:
+    # Load the saved weights of pre-trained generator (trained only on l1 loss)
     generator.load_state_dict(torch.load(os.path.join(config.MODEL_DIR, 'generator_weights_pretrained_l1.pth'), map_location=config.DEVICE))
 
 if config.PRETRAIN_GENERATOR:
@@ -141,7 +150,7 @@ if config.PRETRAIN_GENERATOR:
 
         running_generator_loss_l1 = 0.0
 
-        generator.train()
+        generator.train()  # Set the generator to training mode
 
         # Iterate over all the batches
         for j in tqdm(range(n_batches), desc='Batch'):
@@ -208,6 +217,7 @@ for epoch in range(config.STARTING_EPOCH, config.NUM_EPOCHS+1):
         L, ab = L.to(config.DEVICE), ab.to(config.DEVICE)
         
         if config.ENHANCE_COLORIZED_IMAGE:
+            # When enhancing the image, we need the RGB ground-truth
             rgb_images = load_rgb_batch(config.TRAIN_DIR, batch_files, config.UPSAMPLE_TRANSFORMS)
             rgb_images = rgb_images.to(config.DEVICE)
         
@@ -226,16 +236,20 @@ for epoch in range(config.STARTING_EPOCH, config.NUM_EPOCHS+1):
 
         # Run fake examples through the discriminator
         if config.ENHANCE_COLORIZED_IMAGE:
+            # When enhancing the image, the output is of 3 channels
             fake_image = fake_color    
         else:
+            # In other cases, the output is just ab channels so we concatenate the L and ab channels
             fake_image = torch.cat([L, fake_color], dim=1)  # Make dim=0 when passing only one sample
         fake_preds = discriminator(fake_image.detach())
         discriminator_loss_fake = adversarial_criterion(fake_preds, fake_label.expand_as(fake_preds).to(config.DEVICE))
         
         # Run real examples through the discriminator
         if config.ENHANCE_COLORIZED_IMAGE:
+            # When enhancing the image, the ground-truth image is taken as the RGB image
             real_image = rgb_images  
         else:
+            # In other cases, concatenate the ground-truth ab channels to the L channels to construct the ground-truth LAB image
             real_image = torch.cat([L, ab], dim=1)  # Make dim=0 when passing only one sample
         real_preds = discriminator(real_image)
         discriminator_loss_real = adversarial_criterion(real_preds, real_label.expand_as(real_preds).to(config.DEVICE))
@@ -263,13 +277,13 @@ for epoch in range(config.STARTING_EPOCH, config.NUM_EPOCHS+1):
         # Calculate adversarial loss for the generator
         generator_loss_adversarial = adversarial_criterion(fake_preds, real_label.expand_as(real_preds).to(config.DEVICE))
         
-        # Calculate L1 loss for the generator (lambda * L1_loss)
+        # Calculate L1 or content loss
         # Total loss is the sum of both the losses
         if config.LOSS_TYPE == 'l1':
-            generator_loss_additional = additional_criterion(fake_color, ab) * config.L1_LAMBDA
+            generator_loss_additional = additional_criterion(fake_color, ab) * config.L1_LAMBDA  # Calculates l1 loss
             generator_loss_total = generator_loss_adversarial + generator_loss_additional
         if config.LOSS_TYPE == 'content':
-            generator_loss_additional = additional_criterion(fake_image, real_image)
+            generator_loss_additional = additional_criterion(fake_image, real_image)  # Calculates content loss
             generator_loss_total = 0.01 * generator_loss_adversarial + generator_loss_additional
         if config.LOSS_TYPE == 'both':
             generator_loss_additional = additional_criterion(fake_image, real_image) + torch.nn.L1Loss()(fake_color, ab) * config.L1_LAMBDA
@@ -286,13 +300,15 @@ for epoch in range(config.STARTING_EPOCH, config.NUM_EPOCHS+1):
         running_discriminator_loss_total += discriminator_loss_total.item() * config.BATCH_SIZE
         
         if config.ENHANCE_COLORIZED_IMAGE:
+            # When enhancing the image use the RGB ground-truth for the ground-truth image, and RGB output of the generator for fake image
             real_image_array = rgb_images
             fake_image_array = fake_image   
         else:
+            # In other cases, use the lab_to_rgb function to convert the LAB image to RGB
             real_image_array = torch.from_numpy(lab_to_rgb(L.detach(), ab.detach()))
             fake_image_array = torch.from_numpy(lab_to_rgb(L.detach(), fake_color.detach()))
         
-        running_mae += 255. * mean_absolute_error(real_image_array, fake_image_array) * config.BATCH_SIZE
+        running_mae += 255. * mean_absolute_error(real_image_array, fake_image_array) * config.BATCH_SIZE  # Multiplying by 255. because input rgb images have values between 0-1
         running_epsilon += epsilon_accuracy(real_image_array, fake_image_array, epsilon=0.05) * config.BATCH_SIZE  # epsilon set at 5% of 255
         running_psnr += peak_signal_to_noise_ratio(real_image_array, fake_image_array, max_value=1.) * config.BATCH_SIZE
 
@@ -342,11 +358,11 @@ for epoch in range(config.STARTING_EPOCH, config.NUM_EPOCHS+1):
         L, ab = L.to(config.DEVICE), ab.to(config.DEVICE)
         
         if config.ENHANCE_COLORIZED_IMAGE:
-            # Run the L channel through the generator to get 'rgb' results
+            # Run the L channel through the generator to get 'RGB' results
             res_images = generator(L).permute(0, 2, 3, 1).detach().numpy()
-            # res_images = output_to_rgb(res_images)
         else:
-            # Run the L channel through the generator to get 'ab' channels
+            # Run the L channel through the generator to get 'ab' channels, which is then concatenated with L channel to construct LAB image
+            # The LAB image is converted to RGB using lab_to_rgb function
             res_images = lab_to_rgb(L, generator(L))
             
         # Create directory for saving visualizations of images for the current epoch
@@ -355,9 +371,9 @@ for epoch in range(config.STARTING_EPOCH, config.NUM_EPOCHS+1):
         
         # Save output images for this epoch
         for i in range(len(res_images)):
-            image = res_images[i] * 255
-            image = Image.fromarray(image.astype(np.uint8))
-            image = image.resize((512, 512))
+            image = res_images[i] * 255  # Make values between 0-255 (originally it is between 0-1)
+            image = Image.fromarray(image.astype(np.uint8))  # Convert to uint8 type
+            image = image.resize((512, 512))  # Resize all images to (512, 512)
             image.save(os.path.join(vis_result_dir, vis_files[i]))
             
-    generator.train()
+    generator.train()  # Set the generator back to training mode

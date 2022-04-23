@@ -18,15 +18,20 @@ def mean_absolute_error(pred_img: torch.tensor, true_img: torch.tensor):
     return mae/true_img.numel()
 
 
-def epsilon_accuracy(pred_img: torch.tensor, true_img: torch.tensor, epsilon=0.5):
+def epsilon_accuracy(pred_img: torch.tensor, true_img: torch.tensor, epsilon=0.05):
 
     assert pred_img.shape[0] > 0 and true_img.shape[0] > 0, "lists are empty"
-    assert pred_img.shape[0] == true_img.shape[0], "num of images in pred_img is not matching with num of images in true_img"
+    assert pred_img.shape[0] == true_img.shape[0], "num of images in pred_img is not matching with num of images in true_img" 
 
-    temp = torch.abs(pred_img - true_img)
-    ee = temp[temp < epsilon].shape[0]
-
-    return ee/true_img.numel()
+    num_samples, width, height, num_channels = true_img.shape
+    
+    diff = torch.abs(true_img - pred_img)
+    diff[diff <= epsilon] = 1
+    diff[diff != 1] = 0
+    
+    mul = diff[:, :, :, 0] * diff[:, :, :, 1] * diff[:, :, :, 2]
+    
+    return torch.sum(mul).item() / (num_samples * width * height)
 
 
 def peak_signal_to_noise_ratio(pred_img: torch.tensor, true_img: torch.tensor, max_value=1):

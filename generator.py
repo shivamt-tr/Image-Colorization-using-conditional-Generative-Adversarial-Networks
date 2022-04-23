@@ -106,7 +106,7 @@ class ResidualUNetBlock(nn.Module):
             return self.act(self.norm(torch.add(self.unetblock(x), shortcut)))
 
 
-class ResNet():
+class ResNet(nn.Module):
     
     def __init__(self, in_channels, out_channels):
         super().__init__()
@@ -195,29 +195,29 @@ class UNet(nn.Module):
         return u_final
 
 
-class ResidualUNet():
+class ResidualUNet(nn.Module):
 
     def __init__(self, in_channels=1, out_channels=3, n_filters=64):
         super().__init__()
         
         self.downsample_initial = nn.Sequential(nn.Conv2d(in_channels, n_filters, kernel_size=4, stride=2, padding=1, bias=False), nn.LeakyReLU(0.2))
         
-        self.down1 = UNetBlock(n_filters, n_filters*2, downsample=True,use_dropout=False)
-        self.down2 = UNetBlock(n_filters*2, n_filters*4, downsample=True,use_dropout=False)
-        self.down3 = UNetBlock(n_filters*4, n_filters*8, downsample=True,use_dropout=False)
-        self.down4 = UNetBlock(n_filters*8, n_filters*8, downsample=True,use_dropout=False)
-        self.down5 = UNetBlock(n_filters*8, n_filters*8, downsample=True,use_dropout=False)
-        self.down6 = UNetBlock(n_filters*8, n_filters*8, downsample=True,use_dropout=False)
+        self.down1 = ResidualUNetBlock(n_filters, n_filters*2, downsample=True,use_dropout=False)
+        self.down2 = ResidualUNetBlock(n_filters*2, n_filters*4, downsample=True,use_dropout=False)
+        self.down3 = ResidualUNetBlock(n_filters*4, n_filters*8, downsample=True,use_dropout=False)
+        self.down4 = ResidualUNetBlock(n_filters*8, n_filters*8, downsample=True,use_dropout=False)
+        self.down5 = ResidualUNetBlock(n_filters*8, n_filters*8, downsample=True,use_dropout=False)
+        self.down6 = ResidualUNetBlock(n_filters*8, n_filters*8, downsample=True,use_dropout=False)
         
         self.downsample_inner = nn.Sequential(nn.Conv2d(n_filters*8, n_filters*8, kernel_size=4, stride=2, padding=1, bias=False), nn.LeakyReLU(0.2))
         self.upsample_inner = nn.Sequential(nn.ConvTranspose2d(n_filters*8, n_filters*8, kernel_size=4, stride=2, padding=1, bias=False), nn.BatchNorm2d(n_filters*8), nn.ReLU())
         
-        self.up1 = UNetBlock(n_filters*8*2, n_filters*8, downsample=False, use_dropout=True)
-        self.up2 = UNetBlock(n_filters*8*2, n_filters*8, downsample=False, use_dropout=True)
-        self.up3 = UNetBlock(n_filters*8*2, n_filters*8, downsample=False, use_dropout=True)
-        self.up4 = UNetBlock(n_filters*8*2, n_filters*4, downsample=False, use_dropout=False)
-        self.up5 = UNetBlock(n_filters*4*2, n_filters*2, downsample=False, use_dropout=False)
-        self.up6 = UNetBlock(n_filters*2*2, n_filters, downsample=False, use_dropout=False)
+        self.up1 = ResidualUNetBlock(n_filters*8*2, n_filters*8, downsample=False, use_dropout=True)
+        self.up2 = ResidualUNetBlock(n_filters*8*2, n_filters*8, downsample=False, use_dropout=True)
+        self.up3 = ResidualUNetBlock(n_filters*8*2, n_filters*8, downsample=False, use_dropout=True)
+        self.up4 = ResidualUNetBlock(n_filters*8*2, n_filters*4, downsample=False, use_dropout=False)
+        self.up5 = ResidualUNetBlock(n_filters*4*2, n_filters*2, downsample=False, use_dropout=False)
+        self.up6 = ResidualUNetBlock(n_filters*2*2, n_filters, downsample=False, use_dropout=False)
         
         self.upsample_final = nn.Sequential(nn.ConvTranspose2d(n_filters*2, 2, kernel_size=4, stride=2, padding=1, bias=False), nn.Tanh())
         
@@ -261,16 +261,16 @@ class ResidualUNetUpsampled(nn.Module):
         # Residual network with upsampling blocks
         self.conv1 = nn.Sequential(nn.Conv2d(3, 64, 3, 1, 1), nn.PReLU())
         
-        self.res1 = ResidualBlock(64, 64)
-        self.res2 = ResidualBlock(64, 64)
-        self.res3 = ResidualBlock(64, 64)
-        self.res4 = ResidualBlock(64, 64)
-        self.res5 = ResidualBlock(64, 64)
-        self.res6 = ResidualBlock(64, 64)
+        self.res1 = ResidualBlock(64, 64, upsample=True)
+        self.res2 = ResidualBlock(64, 64, upsample=True)
+        self.res3 = ResidualBlock(64, 64, upsample=True)
+        self.res4 = ResidualBlock(64, 64, upsample=True)
+        self.res5 = ResidualBlock(64, 64, upsample=True)
+        self.res6 = ResidualBlock(64, 64, upsample=True)
         
         self.conv_add = nn.Sequential(nn.Conv2d(64, 3, 3, 1, 1), nn.BatchNorm2d(3))
         self.conv2 = nn.Sequential(nn.Conv2d(3, 64, 3, 1, 1), nn.BatchNorm2d(64))
-        self.pixup1 = Upsample(64)
+        self.pixup1 = UpsampleBlock(64)
         self.final = nn.Sequential(nn.Conv2d(64, out_channels, 9, 1, 4))
         
     def forward(self, x):

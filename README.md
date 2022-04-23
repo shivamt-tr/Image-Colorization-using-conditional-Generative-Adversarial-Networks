@@ -36,6 +36,24 @@ To train the model on one of the pre-defined tasks you can run the following com
 python train.py --model model_name --startfrom epoch_number
 ```
 
+## Evaluation
+To evaluate the model on the test dataset, run the following command.
+```bash
+python eval.py --model model_name
+```
+
+## Frechet Inception Distance (FID Score)
+To calculate the FID score, first run eval.py on some model which will save the results of test dataset in ./data/eval-results directory. After eval.py has run successfully run the following command.
+```bash
+python -m pytorch_fid path/to/eval/images path/to/test/images --num-workers 0
+```
+
+For example:
+```bash
+python -m pytorch_fid ./data/test ./data/eval-results --num-workers 0
+```
+
+
 ## Testing
 - Run the following command to test the model on the images stored in test-images/ and generate results in test-results/.
 - Note: Make sure that the download_datasets_and_models.sh has already been run.
@@ -56,6 +74,19 @@ We investigate conditional adversarial networks as a general-purpose solution to
       eprint={1611.07004},
       archivePrefix={arXiv},
       primaryClass={cs.CV}
+}
+```
+
+## FID Score in PyTorch
+
+```
+@misc{Seitzer2020FID,
+  author={Maximilian Seitzer},
+  title={{pytorch-fid: FID Score for PyTorch}},
+  month={August},
+  year={2020},
+  note={Version 0.2.1},
+  howpublished={\url{https://github.com/mseitzer/pytorch-fid}},
 }
 ```
 

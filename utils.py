@@ -15,6 +15,8 @@ import torch
 from torch import nn
 from torchvision import transforms
 
+# from generator import UNet, 
+
 def lab_to_rgb(L, ab):
     
     L = (L + 1.) * 50.
@@ -125,8 +127,10 @@ def load_generator(type: str):
         generator = ResidualUNet(in_channels=1, out_channels=2, n_filters=64)
 
         if config.ENHANCE_COLORIZED_IMAGE:
-            generator.load_state_dict(torch.load(os.path.join(config.MODEL_DIR, 'generator.pth')), map_location=config.DEVICE)
-            generator = ResiduialUNetUpsampled(generator, train_base_block=False, in_channels=1, out_channels=3, n_filters=64)
+            
+            from generator import ResidualUNetUpsampled
+            # generator.load_state_dict(torch.load(os.path.join(config.MODEL_DIR, '5_generator_residual_unet_l1_loss.pth'), map_location=config.DEVICE))
+            generator = ResidualUNetUpsampled(generator, train_base_block=False, in_channels=1, out_channels=3, n_filters=64)
 
     if config.GENERATOR_TYPE == 'PretrainedUNet':
         
