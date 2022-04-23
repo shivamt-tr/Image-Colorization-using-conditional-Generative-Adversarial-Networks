@@ -84,7 +84,7 @@ if config.STARTING_EPOCH == 1:
         np.savetxt(f, [], delimiter=',', header=header, comments='')
 
 # List of train, test, and visualization files
-train_files = os.listdir(config.TRAIN_DIR)[:17]
+train_files = os.listdir(config.TRAIN_DIR)[:5]
 test_files = os.listdir(config.TEST_DIR)
 vis_files = os.listdir(config.VIS_DIR)
 
@@ -274,19 +274,26 @@ for epoch in range(config.STARTING_EPOCH, config.NUM_EPOCHS+1):
         # Calculate the prediction using discriminator
         fake_preds = discriminator(fake_image)
         
+        if config.ENHANCE_COLORIZED_IMAGE:
+            # When enhancing the image, the real colors are represented by RGB channels
+            real_color = real_image
+        else:
+            # In other cases, only ab channels represent the colors
+            real_color = ab
+
         # Calculate adversarial loss for the generator
         generator_loss_adversarial = adversarial_criterion(fake_preds, real_label.expand_as(real_preds).to(config.DEVICE))
         
         # Calculate L1 or content loss
         # Total loss is the sum of both the losses
         if config.LOSS_TYPE == 'l1':
-            generator_loss_additional = additional_criterion(fake_color, ab) * config.L1_LAMBDA  # Calculates l1 loss
+            generator_loss_additional = additional_criterion(fake_color, real_color) * config.L1_LAMBDA  # Calculates l1 loss
             generator_loss_total = generator_loss_adversarial + generator_loss_additional
         if config.LOSS_TYPE == 'content':
             generator_loss_additional = additional_criterion(fake_image, real_image)  # Calculates content loss
             generator_loss_total = 0.01 * generator_loss_adversarial + generator_loss_additional
         if config.LOSS_TYPE == 'both':
-            generator_loss_additional = additional_criterion(fake_image, real_image) + torch.nn.L1Loss()(fake_color, ab) * config.L1_LAMBDA
+            generator_loss_additional = additional_criterion(fake_image, real_image) + torch.nn.L1Loss()(fake_color, real_color) * config.L1_LAMBDA
             generator_loss_total = 0.01 * generator_loss_adversarial + generator_loss_additional
         
         # backward + optimize

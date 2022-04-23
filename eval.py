@@ -21,6 +21,7 @@ warnings.filterwarnings("ignore")
 
 # %%
 
+# Configure command-line arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--model',
                     help='model type to train or test, specify a number between 1-7 or one of [\'1_generator_base_l1_loss\', \'2_generator_base_content_loss\', \'3_generator_base_l1_and_content_loss\', \'4_generator_resnet_l1_loss\', \'5_generator_residual_unet_l1_loss\', \'6_generator_residual_unet_upsampled_l1_loss\', \'7_generator_base_l1_loss_pretrained\']',
