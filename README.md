@@ -56,7 +56,7 @@ python -m pytorch_fid ./data/test ./data/eval-results --num-workers 0
 
 ## Testing
 - Run the following command to test the model on the images stored in test-images/ and generate results in test-results/.
-- Note: Make sure that the download_datasets_and_models.sh has already been run.
+- Note: Make sure that the model weights are present in models/ directory.
 ```bash
 python test.py --model model_name
 ```
