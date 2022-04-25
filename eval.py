@@ -63,7 +63,7 @@ if args.model == '7_generator_base_l1_loss_pretrained' or args.model == '7':
 # %%
 
 # Root directory for test-data
-test_files = os.listdir(config.TEST_DIR)[:5]
+test_files = os.listdir(config.TEST_DIR)
 
 # Create directory for saving visualizations of images for the current epoch
 result_dir = os.path.join(os.getcwd(), 'data', 'eval-results')

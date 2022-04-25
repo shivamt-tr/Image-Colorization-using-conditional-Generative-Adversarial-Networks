@@ -84,7 +84,7 @@ if config.STARTING_EPOCH == 1:
         np.savetxt(f, [], delimiter=',', header=header, comments='')
 
 # List of train, test, and visualization files
-train_files = os.listdir(config.TRAIN_DIR)[:5]
+train_files = os.listdir(config.TRAIN_DIR)
 test_files = os.listdir(config.TEST_DIR)
 vis_files = os.listdir(config.VIS_DIR)
 
