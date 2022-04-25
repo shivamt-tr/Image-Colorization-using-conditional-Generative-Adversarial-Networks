@@ -1,7 +1,7 @@
 # Image Colorization using conditional-Generative Adversarial Networks
  CS776A Course Project: Image Colorization using Conditional-Generative Adversarial Networks (c-GANs)
 
-This work is based on Image-to-Image Translation with condition GANs (Pix2Pix).
+This work is based on Image-to-Image Translation with condition GANs (Pix2Pix). Have a look at the project slides here [slides](https://docs.google.com/presentation/d/1LZg1fq5fkpnLJhkoWnk84vS3sXKsP4OjgrEz5tpPgPo/edit?usp=sharing)
 
 ## Installing the requirements
 ```
