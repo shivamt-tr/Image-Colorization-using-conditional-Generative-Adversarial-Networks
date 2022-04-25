@@ -63,7 +63,7 @@ if args.model == '7_generator_base_l1_loss_pretrained' or args.model == '7':
 # %%
 
 # Root directory for test-data
-test_files = os.listdir(config.TEST_DIR)
+test_files = os.listdir(config.TEST_DIR)[:5]
 
 # Create directory for saving visualizations of images for the current epoch
 result_dir = os.path.join(os.getcwd(), 'data', 'eval-results')
@@ -71,7 +71,6 @@ os.makedirs(result_dir, exist_ok=True)
 
 # Create generator object and load pretrained weights
 generator = load_generator(config.GENERATOR_TYPE)
-print(os.path.join(config.MODEL_DIR, config.MODEL_NAME+'.pth'))
 generator.load_state_dict(torch.load(os.path.join(config.MODEL_DIR, config.MODEL_NAME+'.pth'), map_location=config.DEVICE))
 
 generator.eval()  # Since we are using only for testing
@@ -95,14 +94,14 @@ for i in tqdm(range(n_batches), desc='Batch'):
         # When enhancing the image, we need the RGB ground-truth
         real_images = load_rgb_batch(config.TEST_DIR, batch_files, config.UPSAMPLE_TRANSFORMS)
         real_images = real_images.to(config.DEVICE)
-        real_images = real_images.permute(0, 2, 3, 1).detach().numpy()
+        real_images = real_images.permute(0, 2, 3, 1).cpu().detach().numpy()
     else:
         # In other cases, L channel + ground-truth ab channels make real images (LAB format)
         real_images = lab_to_rgb(L, ab)
 
     if config.ENHANCE_COLORIZED_IMAGE:
         # Run the L channel through the generator to get 'RGB' results
-        fake_images = generator(L).permute(0, 2, 3, 1).detach().numpy()
+        fake_images = generator(L).permute(0, 2, 3, 1).cpu().detach().numpy()
     else:
         # Run the L channel through the generator to get 'ab' channels, which is then concatenated with L channel to construct LAB image
         # The LAB image is converted to RGB using lab_to_rgb function

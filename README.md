@@ -42,6 +42,13 @@ To evaluate the model on the test dataset, run the following command.
 python eval.py --model model_name
 ```
 
+## Testing
+- Run the following command to test the model on the images stored in test-images/ and generate results in test-results/.
+- Note: Make sure that the model weights are present in models/ directory.
+```bash
+python test.py --model model_name
+```
+
 ## Frechet Inception Distance (FID Score)
 To calculate the FID score, first run eval.py on some model which will save the results of test dataset in ./data/eval-results directory. After eval.py has run successfully run the following command.
 ```bash
@@ -51,14 +58,6 @@ python -m pytorch_fid path/to/eval/images path/to/test/images --num-workers 0
 For example:
 ```bash
 python -m pytorch_fid ./data/test ./data/eval-results --num-workers 0
-```
-
-
-## Testing
-- Run the following command to test the model on the images stored in test-images/ and generate results in test-results/.
-- Note: Make sure that the model weights are present in models/ directory.
-```bash
-python test.py --model model_name
 ```
 
 ## Pix2Pix paper

@@ -366,7 +366,7 @@ for epoch in range(config.STARTING_EPOCH, config.NUM_EPOCHS+1):
         
         if config.ENHANCE_COLORIZED_IMAGE:
             # Run the L channel through the generator to get 'RGB' results
-            res_images = generator(L).permute(0, 2, 3, 1).detach().numpy()
+            res_images = generator(L).permute(0, 2, 3, 1).cpu().detach().numpy()
         else:
             # Run the L channel through the generator to get 'ab' channels, which is then concatenated with L channel to construct LAB image
             # The LAB image is converted to RGB using lab_to_rgb function

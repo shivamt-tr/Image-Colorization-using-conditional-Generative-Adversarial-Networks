@@ -79,14 +79,15 @@ L, ab = load_transformed_batch(test_dir, test_files, config.VAL_TRANSFORMS)
 
 if config.ENHANCE_COLORIZED_IMAGE:
     # When enhancing the image, we need the RGB ground-truth
-    real_images = load_rgb_batch(config.TEST_DIR, test_files, config.UPSAMPLE_TRANSFORMS)
+    real_images = load_rgb_batch(test_dir, test_files, config.UPSAMPLE_TRANSFORMS)
+    real_images = real_images.permute(0, 2, 3, 1).cpu().detach().numpy()
 else:
     # In other cases, L channel + ground-truth ab channels make real images (LAB format)
     real_images = lab_to_rgb(L, ab)
    
 if config.ENHANCE_COLORIZED_IMAGE:
     # Run the L channel through the generator to get 'RGB' results
-    fake_images = generator(L).permute(0, 2, 3, 1).detach().numpy()
+    fake_images = generator(L).permute(0, 2, 3, 1).cpu().detach().numpy()
 else:
     # Run the L channel through the generator to get 'ab' channels, which is then concatenated with L channel to construct LAB image
     # The LAB image is converted to RGB using lab_to_rgb function
